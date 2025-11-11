@@ -38,10 +38,10 @@ const App = () => {
         const newData: DialogBoxProps = {
           originText: message.data.originText || '',
           partOfSpeech: message.data.partOfSpeech || '',
-          descriptionText: message.data.description || '',
-          exampleText1: message.data.exaple1 || '',
-          exampleText2: message.data.exaple2 || '',
-          exampleText3: message.data.exaple3 || '',
+          description: message.data.description || '',
+          similarText1: message.data.similar1 || '',
+          similarText2: message.data.similar2 || '',
+          similarText3: message.data.similar3 || '',
           onClose: handleDialogClose,
         };
         if (rect === null) {
@@ -57,7 +57,7 @@ const App = () => {
 
   return (
     <>
-      {data && data.descriptionText && rect !== null && (
+      {data && data.description && rect !== null && (
         <div style={{ position: 'absolute', width: '100%', left: 0, top: 0, zIndex: 2147483550 }}>
           <div
             style={{

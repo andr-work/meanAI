@@ -5,16 +5,16 @@ import { useState } from 'react';
 export interface DialogBoxProps {
   originText: string;
   partOfSpeech: string;
-  descriptionText: string;
-  exampleText1: string;
-  exampleText2: string;
-  exampleText3: string;
+  description: string;
+  similarText1: string;
+  similarText2: string;
+  similarText3: string;
   onClose: () => void;
 }
 
 export const DialogBox = (props: DialogBoxProps) => {
   const [opened, setOpened] = useState(true);
-  const IconUrl = chrome.runtime.getURL('icon-128.png');
+  const IconUrl = chrome.runtime.getURL('meanAI.png');
 
   const handleClickAway = () => {
     setOpened(false);
@@ -47,16 +47,16 @@ export const DialogBox = (props: DialogBoxProps) => {
             {props.partOfSpeech}
           </Typography>
           <Typography variant="body2" color="textPrimary">
-            {props.descriptionText}
+            {props.description}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            {props.exampleText1}
+            {props.similarText1}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            {props.exampleText2}
+            {props.similarText2}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            {props.exampleText3}
+            {props.similarText3}
           </Typography>
           <Stack direction="row" justifyContent="flex-end" spacing={1} pr={2}>
             <Tooltip title="音声読み上げ" placement="top" arrow>
@@ -65,7 +65,7 @@ export const DialogBox = (props: DialogBoxProps) => {
               </IconButton>
             </Tooltip>
             <Tooltip title="クリップボードにコピー" placement="top" arrow>
-              <IconButton onClick={() => navigator.clipboard.writeText(props.descriptionText)}>
+              <IconButton onClick={() => navigator.clipboard.writeText(props.description)}>
                 <ContentCopyOutlined />
               </IconButton>
             </Tooltip>

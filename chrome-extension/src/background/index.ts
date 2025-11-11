@@ -32,7 +32,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
             {
               role: 'system',
               content:
-                'You are a helpful assistant that explains text in simple and short, easy-to-understand language.',
+                'You are a helpful assistant that explains English words in a very simple and short way. ' +
+                'Use only easy words that English learner can understand. Do not use difficult words or long sentences. ' +
+                'For the "similar1", "similar2", "similar3" fields, write words that are similar in meaning to the originText.',
             },
           ],
         };
@@ -43,9 +45,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           originText: info.selectionText,
           partOfSpeech: 'string',
           description: 'string',
-          exaple1: 'string',
-          exaple2: 'string',
-          exaple3: 'string',
+          similar1: 'string',
+          similar2: 'string',
+          similar3: 'string',
         };
 
         const prompt = `explain the following text in same language: ${info.selectionText}`;
