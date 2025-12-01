@@ -10,71 +10,48 @@ chrome.runtime.onInstalled.addListener(async () => {
 
 const pendingMessages: Record<number, any[]> = {};
 
-// モデルの状態をチェック（一時セッションを作成して即座に破棄）
+const systemPrompt =
+  'You are a helpful dictionary assistant. You explain English words simply for learners. You MUST return only valid JSON. Do not include any other text.';
+
+// check model status
 const checkModelStatus = async () => {
   let session: any = null;
   try {
     // Check availability first
     const availability = await LanguageModel?.availability();
 
-    if (!availability) {
-      throw new Error('Chrome Prompt API not found (LanguageModel)');
-    }
+    switch (availability) {
+      case 'available':
+        break;
+      case 'unavailable':
+        throw new Error('AI model is unavailable on this device (insufficient power or disk space)');
+      case 'downloading':
+        throw new Error('AI model is currently downloading. Please wait and try again.');
+      case 'downloadable':
+        // Use initialPrompts format for downloadable models
+        session = await LanguageModel!.create({
+          initialPrompts: [
+            {
+              role: 'system',
+              content: 'hello!',
+            },
+          ],
+        });
 
-    if (availability === 'unavailable') {
-      throw new Error('AI model is unavailable on this device (insufficient power or disk space)');
-    }
-
-    if (availability === 'downloading') {
-      throw new Error('AI model is currently downloading. Please wait and try again.');
-    }
-
-    const systemPrompt =
-      'You are a helpful dictionary assistant. You explain English words simply for learners. You MUST return only valid JSON. Do not include any other text.';
-
-    if (availability === 'downloadable') {
-      // Use initialPrompts format for downloadable models
-      session = await LanguageModel!.create({
-        initialPrompts: [
-          {
-            role: 'system',
-            content: systemPrompt,
-          },
-        ],
-        monitor(m) {
-          m.addEventListener('downloadprogress', () => {
-            // Download progress tracking
-          });
-        },
-      });
-    } else {
-      // Model is available
-      session = await LanguageModel!.create({
-        initialPrompts: [
-          {
-            role: 'system',
-            content: systemPrompt,
-          },
-        ],
-      });
+        // destroy session
+        if (session?.destroy) {
+          await session.destroy();
+        }
     }
   } catch (e) {
     console.error('[Background] Model check failed:', e);
     throw e;
-  } finally {
-    // セッションをすぐに破棄
-    if (session?.destroy) {
-      await session.destroy();
-    }
   }
 };
 
-// 実際に使用するセッションを作成
+// create session
 const createSession = async () => {
   try {
-    const systemPrompt =
-      'You are a helpful dictionary assistant. You explain English words simply for learners. You MUST return only valid JSON. Do not include any other text.';
-
     const session = await LanguageModel!.create({
       initialPrompts: [
         {
@@ -91,7 +68,7 @@ const createSession = async () => {
   }
 };
 
-// ページロード時にモデルの availability をチェック
+// check availability status when page loaded
 const checkModelOnPageLoad = async () => {
   try {
     await checkModelStatus();
@@ -203,7 +180,6 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
   if (msg.type === 'CONTENT_READY' && sender.tab?.id) {
     const tabId = sender.tab.id;
 
-    // ページロード時にモデルの availability をチェック
     checkModelOnPageLoad();
 
     const messages = pendingMessages[tabId] || [];
