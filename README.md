@@ -1,4 +1,3 @@
-# What Does It Mean
-A Chrome extension that explains in English words and phrases you can't understand.
-
-Built using the [chrome-extension-boilerplate-react-vite](https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite) template.
+# meanAI
+- 分からない単語やフレーズ、テキストなどを'英語'で説明するChrome拡張です。
+- [chrome-extension-boilerplate-react-vite](https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite) テンプレートをベースに作成しています。
